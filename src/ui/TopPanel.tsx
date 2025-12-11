@@ -28,7 +28,7 @@ export const TopPanel: React.FC<Props> = ({ state, maxTurns }) => {
     <div className="space-y-3 mb-4">
       <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold font-mono">Treasury Wars</h1>
+          <h1 className="text-2xl font-bold font-mono">Treasury Wars v1.0</h1>
           <p className="text-[11px] text-slate-400">
             Drain as much of the official treasury into off-chain founder funds as you can in {maxTurns} turns without
             triggering a DAO coup or a regulatory shutdown.

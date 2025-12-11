@@ -24,9 +24,9 @@ function applyMarketDrift(state: GameState, rng: RNG): GameState {
   if (tokenPrice > state.tokenPrice * 1.25) tokenPrice = state.tokenPrice * 1.25;
   if (tokenPrice < state.tokenPrice * 0.75) tokenPrice = state.tokenPrice * 0.75;
 
-  const sentiment = (100 - state.rage + state.cred) / 200;
+  const tvlSentiment = (100 - state.rage + state.cred) / 200;
   const tvlNoise = (rng() - 0.5) * 0.1;
-  let tvl = state.tvl * (1 + priceDelta * 0.5 + tvlNoise * sentiment);
+  let tvl = state.tvl * (1 + priceDelta * 0.5 + tvlNoise * tvlSentiment);
   tvl = Math.max(0, tvl);
 
   return { ...state, tokenPrice, tvl };
