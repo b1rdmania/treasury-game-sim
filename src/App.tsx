@@ -120,7 +120,30 @@ const App: React.FC = () => {
   };
 
   const handleResolveCrisis = (optionId: string) => {
-    setState((s) => (s ? resolveCrisisOption(s, optionId, rng) : s));
+    setState((s) => {
+      if (!s) return s;
+      const before = { ...s };
+      const result = resolveCrisisOption(s, optionId, rng);
+      const after = result.state;
+      const deltas = [
+        { label: "Official Treasury", delta: after.officialTreasury - before.officialTreasury },
+        { label: "Siphoned", delta: after.siphoned - before.siphoned },
+        { label: "Community Rage", delta: after.rage - before.rage },
+        { label: "Regulatory Heat", delta: after.heat - before.heat },
+        { label: "Cred", delta: after.cred - before.cred },
+        { label: "Tech", delta: after.techHype - before.techHype },
+        { label: "Price", delta: after.tokenPrice - before.tokenPrice },
+        { label: "TVL", delta: after.tvl - before.tvl },
+      ].filter((d) => d.delta !== 0);
+      setTurnModalData({
+        actionName: s.pendingCrisis?.name ?? "Crisis",
+        severity: null,
+        deltas,
+        logLine: result.narrative,
+      });
+      setTurnModalOpen(true);
+      return after;
+    });
   };
 
   if (!started) {

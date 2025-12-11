@@ -260,16 +260,24 @@ export function maybePickCrisis(state: GameState, rng: RNG, season: SeasonDef): 
   return candidates[candidates.length - 1];
 }
 
-export function resolveCrisisOption(state: GameState, optionId: string, rng: RNG): GameState {
-  if (!state.pendingCrisis) return state;
+export interface CrisisResolution {
+  state: GameState;
+  narrative: string;
+}
+
+export function resolveCrisisOption(state: GameState, optionId: string, rng: RNG): CrisisResolution {
+  if (!state.pendingCrisis) return { state, narrative: "" };
   const option = state.pendingCrisis.options.find((o) => o.id === optionId);
-  if (!option) return state;
+  if (!option) return { state, narrative: "" };
   const outcome = option.resolve(state, rng);
   const updated = outcome.apply(state);
   return {
-    ...updated,
-    pendingCrisis: undefined,
-    log: [`[CRISIS] ${outcome.narrative}`, ...updated.log],
+    state: {
+      ...updated,
+      pendingCrisis: undefined,
+      log: [`[CRISIS] ${outcome.narrative}`, ...updated.log],
+    },
+    narrative: outcome.narrative,
   };
 }
 
