@@ -7,7 +7,6 @@ import { EndOfRunCard } from "./ui/EndOfRunCard";
 import { CrisisModal } from "./ui/CrisisModal";
 import { resolveCrisisOption } from "./engine/crises";
 import type { GameState } from "./engine/state";
-import { SEASONS } from "./engine/seasons";
 import type { SeasonId } from "./engine/seasons";
 import { TopPanel } from "./ui/TopPanel";
 import { TurnResultModal } from "./ui/TurnResultModal";
@@ -24,7 +23,7 @@ const App: React.FC = () => {
   const [chainName, setChainName] = useState("ZooChain");
   const [ticker, setTicker] = useState("ZOO");
   const [founderName, setFounderName] = useState("You");
-  const [seasonId, setSeasonId] = useState<SeasonId>("meme_summer");
+  const seasonId: SeasonId = "meme_summer"; // V1: fixed season
   const [state, setState] = useState<GameState | null>(null);
   const [showDebug, setShowDebug] = useState(false);
   const [turnModalOpen, setTurnModalOpen] = useState(false);
@@ -243,20 +242,6 @@ const App: React.FC = () => {
                 onChange={(e) => setFounderName(e.target.value)}
                 placeholder="0xAndy"
               />
-            </label>
-            <label className="block">
-              <span className="text-xs uppercase tracking-wide text-slate-500">Season</span>
-              <select
-                className="w-full mt-1 rounded-lg bg-slate-800 border border-slate-700 px-4 py-3 text-sm focus:outline-none focus:border-sky-500 transition-colors"
-                value={seasonId}
-                onChange={(e) => setSeasonId(e.target.value as SeasonId)}
-              >
-                {SEASONS.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
             </label>
           </div>
 
