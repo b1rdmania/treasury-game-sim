@@ -5,9 +5,10 @@ import { formatMoney, formatTokenPrice } from "./format";
 interface Props {
   state: GameState;
   maxTurns: number;
+  showDescription?: boolean;
 }
 
-export const TopPanel: React.FC<Props> = ({ state, maxTurns }) => {
+export const TopPanel: React.FC<Props> = ({ state, maxTurns, showDescription = true }) => {
   const { chainName, ticker, tokenPrice, tvl, officialTreasury, siphoned, rage, heat, cred, techHype, seasonId } =
     state;
 
@@ -29,10 +30,12 @@ export const TopPanel: React.FC<Props> = ({ state, maxTurns }) => {
       <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
           <h1 className="text-2xl font-bold font-mono">Treasury Wars v1.0</h1>
-          <p className="text-[11px] text-slate-400">
-            Drain as much of the official treasury into off-chain founder funds as you can in {maxTurns} turns without
-            triggering a DAO coup or a regulatory shutdown.
-          </p>
+          {showDescription && (
+            <p className="text-[11px] text-slate-400">
+              Drain as much of the official treasury into off-chain founder funds as you can in {maxTurns} turns without
+              triggering a DAO coup or a regulatory shutdown.
+            </p>
+          )}
         </div>
         <div className="text-right text-xs text-slate-300 font-mono">
           <div>

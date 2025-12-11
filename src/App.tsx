@@ -192,7 +192,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#0d0f14] text-slate-100 flex items-start justify-center">
       <div className="max-w-4xl w-full p-3 sm:p-5 relative bg-[#0d0f14] pb-16">
         <div className="sticky top-0 z-30">
-          <TopPanel state={state} maxTurns={state.maxTurns} />
+          <TopPanel state={state} maxTurns={state.maxTurns} showDescription={false} />
         </div>
 
         <div className="bg-[#12151c] border border-[#1c1f27] rounded-[8px] p-4 mt-2">
