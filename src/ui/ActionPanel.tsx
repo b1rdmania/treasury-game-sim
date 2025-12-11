@@ -19,12 +19,6 @@ const CATEGORY_COLOR: Record<ActionCategory, string> = {
   Social: "border-purple-400",
 };
 
-const tagColor = (tag: string) => {
-  if (tag.startsWith("+")) return "text-emerald-300";
-  if (tag.startsWith("-")) return "text-rose-300";
-  return "text-slate-300";
-};
-
 export const ActionPanel: React.FC<Props> = ({ state, onSelect, disabled }) => {
   const actions = state.availableActions.length
     ? ACTIONS.filter((a) => state.availableActions.includes(a.id)).filter(
@@ -62,15 +56,6 @@ export const ActionPanel: React.FC<Props> = ({ state, onSelect, disabled }) => {
                 >
                   <div className="font-semibold leading-tight">{a.name}</div>
                   <div className="text-[11px] text-slate-300 opacity-80 leading-tight">{a.description}</div>
-                  {a.tags && (
-                    <div className="flex flex-wrap gap-2 mt-1 text-[10px] opacity-80">
-                      {a.tags.map((t) => (
-                        <span key={t} className={tagColor(t)}>
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </button>
               ))}
             </div>

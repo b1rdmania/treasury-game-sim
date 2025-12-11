@@ -65,13 +65,16 @@ export const TopPanel: React.FC<Props> = ({ state, maxTurns, showDescription = t
   );
 };
 
-const Cluster: React.FC<{ label: string; value: number; color: string }> = ({ label, value, color }) => (
-  <span className="flex items-center gap-1">
-    {label}
-    <span className="h-1.5 w-12 bg-slate-700 rounded overflow-hidden">
-      <span className={`block h-1.5 ${color}`} style={{ width: `${Math.min(100, value)}%` }} />
+const Cluster: React.FC<{ label: string; value: number; color: string }> = ({ label, value, color }) => {
+  const display = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
+  return (
+    <span className="flex items-center gap-1">
+      {label}
+      <span className="h-1.5 w-12 bg-slate-700 rounded overflow-hidden">
+        <span className={`block h-1.5 ${color}`} style={{ width: `${Math.min(100, value)}%` }} />
+      </span>
+      {display}
     </span>
-    {value}
-  </span>
-);
+  );
+};
 
