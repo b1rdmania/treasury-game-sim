@@ -6,7 +6,7 @@ interface Props {
 
 export const LogSection: React.FC<Props> = ({ log }) => {
   const [expanded, setExpanded] = useState(false);
-  const shown = expanded ? log : log.slice(0, 2);
+  const shown = expanded ? log : log.slice(0, 1);
 
   return (
     <div className="mt-2">

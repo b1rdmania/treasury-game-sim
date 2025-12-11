@@ -11,6 +11,20 @@ interface Props {
 
 const CATEGORY_ORDER: ActionCategory[] = ["Siphon", "Governance", "Narrative", "Damage Control", "Social"];
 
+const CATEGORY_COLOR: Record<ActionCategory, string> = {
+  Siphon: "border-red-500",
+  Governance: "border-amber-400",
+  Narrative: "border-sky-400",
+  "Damage Control": "border-orange-400",
+  Social: "border-purple-400",
+};
+
+const tagColor = (tag: string) => {
+  if (tag.startsWith("+")) return "text-emerald-300";
+  if (tag.startsWith("-")) return "text-rose-300";
+  return "text-slate-300";
+};
+
 export const ActionPanel: React.FC<Props> = ({ state, onSelect, disabled }) => {
   const actions = state.availableActions.length
     ? ACTIONS.filter((a) => state.availableActions.includes(a.id)).filter(
@@ -40,14 +54,23 @@ export const ActionPanel: React.FC<Props> = ({ state, onSelect, disabled }) => {
                   key={a.id}
                   onClick={() => onSelect(a.id)}
                   disabled={disabled}
-                  className={`w-full text-left rounded-[6px] px-3 py-3 text-[13px] font-mono ${
+                  className={`w-full text-left rounded-[6px] px-3 py-2 text-[13px] font-sans border-l-2 ${
                     disabled
                       ? "bg-slate-800/60 text-slate-500 cursor-not-allowed border border-slate-800"
-                      : "bg-[#12151c] hover:bg-[#171b24] border border-[#1c1f27]"
+                      : `bg-[#12151c] hover:bg-[#171b24] border border-[#1c1f27] ${CATEGORY_COLOR[a.category]}`
                   }`}
                 >
-                  <div className="font-semibold">{a.name}</div>
-                  <div className="text-xs text-slate-300">{a.description}</div>
+                  <div className="font-semibold leading-tight">{a.name}</div>
+                  <div className="text-[11px] text-slate-300 opacity-80 leading-tight">{a.description}</div>
+                  {a.tags && (
+                    <div className="flex flex-wrap gap-2 mt-1 text-[10px] opacity-80">
+                      {a.tags.map((t) => (
+                        <span key={t} className={tagColor(t)}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </button>
               ))}
             </div>

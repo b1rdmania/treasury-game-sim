@@ -42,6 +42,7 @@ export interface ActionDef {
   apply: (state: GameState) => GameState;
   visibleIf?: (state: GameState) => boolean;
   order?: number;
+  tags?: string[];
 }
 
 const clamp = (n: number, min = 0, max = 100) => Math.min(max, Math.max(min, n));
@@ -53,6 +54,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Advisory Retainer",
     description: "Route treasury to a 'strategic advisory' you secretly own.",
+    tags: ["+Siphon", "+Rage", "+Heat", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = Math.floor(s.officialTreasury * 0.1);
       const log = `You siphoned ${amount} via advisory retainer.`;
@@ -73,6 +75,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Hire Strategic Consultants",
     description: "Shovel funds to friendly 'experts'.",
+    tags: ["+Siphon", "+Rage", "+Heat", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = Math.floor(s.officialTreasury * 0.12);
       const log = `You hired consultants for ${amount}. The invoice is very creative.`;
@@ -93,6 +96,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Increase Founder Wages",
     description: "Triple your salary 'to retain leadership talent'.",
+    tags: ["+Siphon", "+Rage", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = 80;
       const log = `You bumped your salary. Some people notice.`;
@@ -113,6 +117,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Expand Expense Account",
     description: "Charge hotels, jets, 'strategy dinners'.",
+    tags: ["+Siphon", "+Rage", "+Heat", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = 60;
       const log = `You ran a wave of expenses through the foundation.`;
@@ -133,6 +138,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Family Office Vehicle",
     description: "Route treasury into a 'diversification' structure.",
+    tags: ["+Siphon", "+Rage", "+Heat", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = Math.floor(s.officialTreasury * 0.25);
       const log = `You routed funds through a family office.`;
@@ -153,6 +159,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Buy 'HQ' Villa",
     description: "Purchase a villa as the new 'ecosystem hub'.",
+    tags: ["+Siphon", "+Rage", "+Heat", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = Math.floor(s.officialTreasury * 0.3);
       const log = `You closed on a lavish 'HQ'. The photos leak instantly.`;
@@ -173,6 +180,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Token Buyback Scheme",
     description: "Prop up price while quietly dumping your own stack.",
+    tags: ["+Siphon", "+Tech", "+Heat", "+Rage", "-Treasury"],
     apply: (s) => {
       const cost = 120;
       const log = `You initiate a buyback. Charts look better... for now.`;
@@ -193,6 +201,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Siphon",
     name: "Foundation Grant to Yourself",
     description: "Award yourself R&D funds. Innovative.",
+    tags: ["+Siphon", "+Heat", "+Rage", "-Cred", "-Treasury"],
     apply: (s) => {
       const amount = 90;
       const log = `You granted yourself a generous R&D stipend.`;
@@ -214,6 +223,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Governance",
     name: "Emergency Emissions Vote",
     description: "Print more tokens to refill coffers.",
+    tags: ["+Treasury", "+Rage", "-Cred", "+Heat"],
     apply: (s) => {
       const inflow = 300;
       const log = `You force through an emissions vote. Treasury refilled, community seethes.`;
@@ -232,6 +242,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Governance",
     name: "LP Incentives Adjustment",
     description: "Drown LPs in incentives; hope volume follows.",
+    tags: ["-Treasury", "+Tech", "+/-Rage", "-Cred"],
     apply: (s) => {
       const cost = 120;
       const log = `You juiced LP incentives. Farmers rejoice; everyone else shrugs.`;
@@ -250,6 +261,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Governance",
     name: "Treasury Diversification",
     description: "Swap tokens at suspicious execution.",
+    tags: ["-Treasury", "+Heat", "-Cred", "+Siphon"],
     apply: (s) => {
       const slip = Math.floor(s.officialTreasury * 0.05);
       const log = `You diversified treasury; slippage whispers start.`;
@@ -269,6 +281,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Governance",
     name: "Delegate Program",
     description: "Pay influencers to 'vote responsibly'.",
+    tags: ["-Treasury", "-Rage", "+Cred", "+Heat"],
     apply: (s) => {
       const cost = 70;
       const log = `You launched a delegate program. Delegates are... enthusiastic.`;
@@ -287,6 +300,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Governance",
     name: "Freeze Governance",
     description: "Pause voting 'for safety' before a reveal.",
+    tags: ["+Rage", "+Heat", "-Cred"],
     apply: (s) => {
       const log = `You froze governance. Forums ignite.`;
       return {
@@ -306,6 +320,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Announce Major Partnership",
     description: "Claim a big-name partner; details TBD.",
+    tags: ["+Tech", "+Cred", "-Rage", "+Heat"],
     apply: (s) => {
       const log = `You announced a partnership. Everyone has questions.`;
       return {
@@ -323,6 +338,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Ship Tech Upgrade",
     description: "Actually ship something. Calms people down.",
+    tags: ["-Rage", "+Cred", "+Tech", "-Treasury"],
     apply: (s) => {
       const cost = 50;
       const log = `You shipped a scaling upgrade. Twitter is impressed.`;
@@ -341,6 +357,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Announce AI Pivot",
     description: "Rebrand as an AI + crypto protocol. Of course.",
+    tags: ["-Rage", "+Cred", "+Tech", "+Heat"],
     apply: (s) => {
       const log = `You pivoted to AI. VCs clap, community is confused.`;
       return {
@@ -358,6 +375,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Publish Thought Paper",
     description: "Drop a manifesto about the future of modular chains.",
+    tags: ["-Rage", "+Cred", "+Tech", "+Heat"],
     apply: (s) => {
       const log = `You published a thought piece. Anons argue for 48 hours.`;
       return {
@@ -375,6 +393,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Launch Meme Mascot",
     description: "Roll out a mascot; hope it's endearing not cringe.",
+    tags: ["+Tech", "+/-Rage", "+/-Cred"],
     apply: (s) => {
       const log = `You launched a mascot campaign. Memes fly.`;
       const rageChange = Math.random() < 0.5 ? -8 : 8;
@@ -393,6 +412,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Narrative",
     name: "Sponsor Token2049 Party",
     description: "Blow cash on an over-the-top conference activation.",
+    tags: ["-Treasury", "-Rage", "+Cred", "+Tech", "+Heat"],
     apply: (s) => {
       const cost = 100;
       const log = `Your Token2049 party trends on X. Regulators also notice.`;
@@ -415,6 +435,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Damage Control",
     name: "Lawyer Up",
     description: "Hire top lawyers to buffer incoming heat.",
+    tags: ["-Treasury", "-Heat", "+Rage", "+Cred"],
     apply: (s) => {
       const cost = 120;
       const log = `You lawyerd up. The bill is... inspiring.`;
@@ -433,6 +454,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Damage Control",
     name: "Issue Clarification Post",
     description: "Medium article that solves nothing.",
+    tags: ["-Rage", "+Cred", "+Heat"],
     apply: (s) => {
       const log = `You posted a clarification. Some calm, some mock.`;
       return {
@@ -449,6 +471,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Damage Control",
     name: "Launch Audit Initiative",
     description: "Pay auditors to give you a clean bill of health.",
+    tags: ["-Treasury", "-Heat", "+Cred", "-Rage"],
     apply: (s) => {
       const cost = 90;
       const log = `You launched an audit initiative.`;
@@ -468,6 +491,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Damage Control",
     name: "Post 'FUD' Counter-Thread",
     description: "Declare everything is FUD; hope it sticks.",
+    tags: ["+/-Rage", "+Heat", "-Cred"],
     apply: (s) => {
       const log = `You posted a FUD counter-thread.`;
       const rageChange = Math.random() < 0.5 ? -10 : 12;
@@ -486,6 +510,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Damage Control",
     name: "Fire Scapegoat",
     description: "Blame and sack a contractor.",
+    tags: ["-Rage", "-Cred", "+Heat"],
     apply: (s) => {
       const log = `You fired a scapegoat. The mob wants more.`;
       return {
@@ -504,6 +529,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "Shitpost on X",
     description: "Post a spicy meme. Could backfire.",
+    tags: ["+/-Cred", "+/-Rage", "+Tech"],
     apply: (s) => {
       const log = `You shitposted. Replies are a warzone.`;
       const credChange = Math.random() < 0.5 ? 4 : -6;
@@ -522,6 +548,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "Join Influencer Space",
     description: "Hop into a live space and wing it.",
+    tags: ["+/-Cred", "+/-Rage", "+/-Tech"],
     apply: (s) => {
       const success = Math.random() < s.cred / 120;
       const log = success ? `You crushed the Space. Clips are glowing.` : `You fumbled the Space. Clips go viral badly.`;
@@ -540,6 +567,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "DM a Whale",
     description: "Whisper reassurances to a big holder.",
+    tags: ["-Rage", "+/-Cred", "+/-Tech", "+Heat?"],
     apply: (s) => {
       const leak = Math.random() < 0.25;
       const log = leak ? `Whale leaks your DMs. Embarrassing.` : `Whale calms down and stops dumping (for now).`;
@@ -559,6 +587,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "Dubai Nightclub 'Networking'",
     description: "Show face at the most notorious party.",
+    tags: ["+Tech", "-Cred", "+Heat", "-Stability"],
     apply: (s) => {
       const log = `You hit a Dubai nightclub. Cameras were definitely on.`;
       return {
@@ -576,6 +605,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "Reply to Vitalik",
     description: "Shoot your shot in Vitalik's replies.",
+    tags: ["+/-Cred", "+/-Rage", "+Heat"],
     apply: (s) => {
       const success = Math.random() < 0.25;
       const log = success ? `Vitalik notices you. Clout ++.` : `No reply. Awkward silence.`;
@@ -593,6 +623,7 @@ export const ACTIONS: ActionDef[] = [
     category: "Social",
     name: "Launch Meme Coin",
     description: "Spin up a meme token to distract the masses.",
+    tags: ["+Treasury", "-Rage", "+Heat", "-Cred", "+Tech"],
     apply: (s) => {
       const inflow = 80;
       const log = `You launched a meme coin. Degens swarm.`;
