@@ -12,3 +12,9 @@ export function formatMoney(value: number): string {
   return `$${value.toFixed(0)}`;
 }
 
+export function formatTokenPrice(value: number): string {
+  if (value >= 10) return `$${value.toFixed(2)}`;
+  if (value >= 1) return `$${value.toFixed(3)}`;
+  return `$${value.toFixed(4)}`;
+}
+

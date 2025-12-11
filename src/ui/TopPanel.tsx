@@ -1,6 +1,6 @@
 import React from "react";
 import type { GameState } from "../engine/state";
-import { formatMoney } from "./format";
+import { formatMoney, formatTokenPrice } from "./format";
 
 interface Props {
   state: GameState;
@@ -70,7 +70,7 @@ export const TopPanel: React.FC<Props> = ({ state, maxTurns }) => {
           <div className="uppercase text-[10px] text-slate-400 mb-1">Market</div>
           <div className="flex justify-between mb-1">
             <span>Price</span>
-            <span className="font-semibold">${tokenPrice.toFixed(2)}</span>
+            <span className="font-semibold">{formatTokenPrice(tokenPrice)}</span>
           </div>
           <div className="flex justify-between mb-1">
             <span>TVL</span>
