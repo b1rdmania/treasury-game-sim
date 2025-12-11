@@ -124,38 +124,47 @@ export const TurnResultModal: React.FC<Props> = ({ open, onClose, actionName, se
           </div>
         )}
 
-        {/* Stat Changes Grid */}
-        {deltas.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 mb-5">
-            {deltas.map((d) => {
-              const isNeg = isNegativeDelta(d.label, d.delta);
-              const isSiphoned = d.label.toLowerCase().includes("siphoned");
-              if (isSiphoned) return null; // Already shown above
-              return (
-                <div
-                  key={d.label}
-                  className={`flex items-center justify-between p-2 rounded-lg ${isNeg ? "bg-red-500/10" : "bg-slate-800/50"
-                    }`}
-                >
-                  <span className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <span>{getStatEmoji(d.label)}</span>
-                    <span>{d.label}</span>
-                  </span>
-                  <span className={`text-sm font-bold tabular-nums ${isNeg ? "text-red-400" : "text-emerald-400"}`}>
-                    {formatDelta(d.delta, d.unit, d.label)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        {/* Stat Changes - Only show narrative-relevant stats */}
+        {deltas.length > 0 && (() => {
+          // Filter to only show: Rage, Heat, Cred, Tech, Price, TVL (hide Treasury/Siphoned)
+          const narrativeStats = deltas.filter((d) => {
+            const l = d.label.toLowerCase();
+            if (l.includes("treasury") || l.includes("siphoned")) return false;
+            return true;
+          });
+
+          if (narrativeStats.length === 0) return null;
+
+          return (
+            <div className="grid grid-cols-2 gap-2 mb-5">
+              {narrativeStats.map((d) => {
+                const isNeg = isNegativeDelta(d.label, d.delta);
+                return (
+                  <div
+                    key={d.label}
+                    className={`flex items-center justify-between p-2 rounded-lg ${isNeg ? "bg-red-500/10" : "bg-slate-800/50"
+                      }`}
+                  >
+                    <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                      <span>{getStatEmoji(d.label)}</span>
+                      <span>{d.label}</span>
+                    </span>
+                    <span className={`text-sm font-bold tabular-nums ${isNeg ? "text-red-400" : "text-emerald-400"}`}>
+                      {formatDelta(d.delta, d.unit, d.label)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
 
         {/* Action Button */}
         <button
           onClick={onClose}
           className={`w-full py-3.5 px-4 font-semibold rounded-xl transition-all text-base ${hasNegative
-              ? "bg-slate-700 hover:bg-slate-600 text-slate-200"
-              : "bg-sky-500 hover:bg-sky-400 text-white"
+            ? "bg-slate-700 hover:bg-slate-600 text-slate-200"
+            : "bg-sky-500 hover:bg-sky-400 text-white"
             }`}
         >
           {hasNegative ? "Survive Another Turn →" : "Next Turn →"}
