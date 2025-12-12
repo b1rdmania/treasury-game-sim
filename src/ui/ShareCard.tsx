@@ -2,26 +2,33 @@ import React from "react";
 import type { GameState } from "../engine/state";
 import { formatMoney, formatTokenPrice } from "./format";
 import { calculateFinalScore, formatScore } from "../engine/scoring";
+import type { EndingDef } from "../engine/endings";
 
 interface Props {
   state: GameState;
+  ending?: EndingDef;
 }
 
-export const ShareCard: React.FC<Props> = ({ state }) => {
+export const ShareCard: React.FC<Props> = ({ state, ending }) => {
   const scoring = calculateFinalScore(state);
   const appliedCombos = scoring.combos.filter(c => c.applied);
-  const survived = state.turn >= state.maxTurns;
+
+  // Apply ending multiplier if present
+  const endingMultiplier = ending?.scoreMultiplier ?? 1;
+  const finalScore = scoring.finalScore * endingMultiplier;
 
   // Calculate extraction rate (what % of original treasury you got)
   const initialTreasury = 1_000_000_000; // $1B starting
   const extractionRate = ((state.siphoned / initialTreasury) * 100).toFixed(1);
 
   const generateShareText = () => {
+    const survived = state.turn >= state.maxTurns;
     const lines = [
       `🏦 Treasury Wars`,
       ``,
-      survived ? `✅ Survived ${state.turn} turns` : `💀 Fell on turn ${state.turn}`,
-      `💰 Extracted: ${formatScore(scoring.finalScore)}`,
+      ending ? `${ending.emoji} ${ending.headline}` : (survived ? `✅ Survived ${state.turn} turns` : `💀 Fell on turn ${state.turn}`),
+      `💰 Extracted: ${formatScore(finalScore)}`,
+      ending?.badge ? `🏷️ ${ending.badge}` : null,
       scoring.totalMultiplier > 1 ? `🎯 +${((scoring.totalMultiplier - 1) * 100).toFixed(0)}% combo bonus` : null,
       ``,
       `Play: treasury-game.vercel.app`
@@ -55,10 +62,12 @@ export const ShareCard: React.FC<Props> = ({ state }) => {
       <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center">
         <div className="text-3xl mb-2">💰</div>
         <div className="text-[10px] uppercase tracking-wide text-emerald-400 mb-1">You Extracted</div>
-        <div className="text-4xl font-bold text-emerald-300 tabular-nums">{formatScore(scoring.finalScore)}</div>
-        {scoring.totalMultiplier > 1 && (
+        <div className="text-4xl font-bold text-emerald-300 tabular-nums">{formatScore(finalScore)}</div>
+        {(scoring.totalMultiplier > 1 || endingMultiplier > 1) && (
           <div className="text-sm text-amber-400 mt-2">
-            +{((scoring.totalMultiplier - 1) * 100).toFixed(0)}% combo bonus applied
+            {scoring.totalMultiplier > 1 && `+${((scoring.totalMultiplier - 1) * 100).toFixed(0)}% combo`}
+            {scoring.totalMultiplier > 1 && endingMultiplier > 1 && " • "}
+            {endingMultiplier > 1 && `+${((endingMultiplier - 1) * 100).toFixed(0)}% ending bonus`}
           </div>
         )}
         <div className="text-xs text-slate-500 mt-2">
@@ -69,17 +78,13 @@ export const ShareCard: React.FC<Props> = ({ state }) => {
       {/* Combos Unlocked */}
       {appliedCombos.length > 0 && (
         <div className="game-card">
-          <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2">Achievements Unlocked</div>
-          <div className="space-y-2">
+          <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2">Achievements</div>
+          <div className="flex flex-wrap gap-2">
             {appliedCombos.map(({ combo }) => (
-              <div key={combo.id} className="flex items-center gap-2 bg-slate-800/50 rounded-lg p-2">
-                <span className="text-xl">{combo.emoji}</span>
-                <div className="flex-1">
-                  <div className="text-sm font-semibold text-amber-400">{combo.name}</div>
-                </div>
-                <span className="text-xs text-emerald-400 font-semibold">
-                  +{((combo.multiplier - 1) * 100).toFixed(0)}%
-                </span>
+              <div key={combo.id} className="flex items-center gap-1.5 bg-slate-800/50 rounded-lg px-2 py-1.5">
+                <span className="text-lg">{combo.emoji}</span>
+                <span className="text-xs font-semibold text-amber-400">{combo.name}</span>
+                <span className="text-[10px] text-emerald-400">+{((combo.multiplier - 1) * 100).toFixed(0)}%</span>
               </div>
             ))}
           </div>

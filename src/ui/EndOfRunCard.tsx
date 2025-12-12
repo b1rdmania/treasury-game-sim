@@ -1,6 +1,7 @@
 import React from "react";
 import type { GameState } from "../engine/state";
 import { ShareCard } from "./ShareCard";
+import { evaluateEnding, getFallbackEnding, type EndingDef } from "../engine/endings";
 
 interface Props {
   state: GameState;
@@ -8,111 +9,61 @@ interface Props {
   onChangeNames?: () => void;
 }
 
-// Dramatic headlines based on outcome
-function getOutcomeData(state: GameState): { emoji: string; headline: string; subline: string; vibe: "success" | "escape" | "failure" } {
-  const survived = state.turn >= state.maxTurns;
-  const bigBag = state.siphoned > 200_000_000; // $200M+
-  const smallBag = state.siphoned < 50_000_000; // < $50M
+function getVibeColors(ending: EndingDef): string {
+  // Success vibes (survived with good outcome)
+  const successIds = ["hyperpump", "wagmi_mode", "master_extractor", "ai_pivot_works", "megacorp_partnership", "become_meme", "narrative_wizard", "governance_theatre", "crisis_lord", "meme_overtakes", "fallback_success"];
+  // Neutral/escape vibes (survived but messy)
+  const escapeIds = ["forced_relocate", "ironic_award", "fallback_survive"];
 
-  if (survived && bigBag) {
-    return {
-      emoji: "🏆",
-      headline: "Legendary Exit",
-      subline: "You played the game perfectly. Offshore accounts secured.",
-      vibe: "success"
-    };
+  if (successIds.includes(ending.id)) {
+    return "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
   }
-
-  if (survived && !smallBag) {
-    return {
-      emoji: "🎯",
-      headline: "Clean Getaway",
-      subline: "You survived the regime. Time for that Dubai penthouse.",
-      vibe: "success"
-    };
+  if (escapeIds.includes(ending.id)) {
+    return "bg-amber-500/10 border-amber-500/30 text-amber-400";
   }
-
-  if (survived && smallBag) {
-    return {
-      emoji: "😐",
-      headline: "Survived... Barely",
-      subline: "You made it out, but your bag is embarrassingly light.",
-      vibe: "escape"
-    };
-  }
-
-  // Failed runs - check reason
-  const reason = state.gameOverReason?.toLowerCase() ?? "";
-
-  if (reason.includes("coup") || reason.includes("rage")) {
-    return {
-      emoji: "⚰️",
-      headline: "Overthrown",
-      subline: "The community came for you. Should've touched grass.",
-      vibe: "failure"
-    };
-  }
-
-  if (reason.includes("regulatory") || reason.includes("heat") || reason.includes("frozen")) {
-    return {
-      emoji: "🚨",
-      headline: "Busted",
-      subline: "The feds got you. Hope you enjoyed the ride.",
-      vibe: "failure"
-    };
-  }
-
-  if (reason.includes("credibility") || reason.includes("cred")) {
-    return {
-      emoji: "🤡",
-      headline: "Irrelevant",
-      subline: "Nobody believes you anymore. Even the bots unfollowed.",
-      vibe: "failure"
-    };
-  }
-
-  if (reason.includes("treasury") || reason.includes("empty")) {
-    return {
-      emoji: "💸",
-      headline: "Rugged Yourself",
-      subline: "You drained it all before you could escape with it.",
-      vibe: "failure"
-    };
-  }
-
-  return {
-    emoji: "💀",
-    headline: "Game Over",
-    subline: "Your reign has ended.",
-    vibe: "failure"
-  };
+  // Everything else is failure
+  return "bg-red-500/10 border-red-500/30 text-red-400";
 }
 
 export const EndOfRunCard: React.FC<Props> = ({ state, onRestart, onChangeNames }) => {
   if (!state.gameOver) return null;
 
-  const outcome = getOutcomeData(state);
-  const vibeColors = {
-    success: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400",
-    escape: "bg-amber-500/10 border-amber-500/30 text-amber-400",
-    failure: "bg-red-500/10 border-red-500/30 text-red-400"
-  };
+  // Evaluate which ending applies
+  const ending = evaluateEnding(state) ?? getFallbackEnding(state);
+  const vibeColors = getVibeColors(ending);
 
   return (
     <div className="modal-backdrop">
       <div className="modal-content max-w-lg">
         {/* Dramatic Header */}
-        <div className={`text-center mb-6 py-6 -mx-6 -mt-6 rounded-t-2xl border-b ${vibeColors[outcome.vibe]}`}>
-          <div className="text-5xl mb-3">{outcome.emoji}</div>
-          <h2 className="text-3xl font-bold tracking-tight">{outcome.headline}</h2>
-          <p className="text-sm opacity-80 mt-2 max-w-xs mx-auto">{outcome.subline}</p>
-          <div className="text-xs opacity-60 mt-3">
-            Turn {state.turn} of {state.maxTurns}
-          </div>
+        <div className={`text-center mb-6 py-6 -mx-6 -mt-6 rounded-t-2xl border-b ${vibeColors}`}>
+          <div className="text-5xl mb-3">{ending.emoji}</div>
+          <h2 className="text-3xl font-bold tracking-tight">{ending.headline}</h2>
+          <p className="text-sm opacity-80 mt-2 max-w-xs mx-auto">{ending.subline}</p>
+          {ending.badge && (
+            <div className="mt-3 inline-block px-3 py-1 rounded-full bg-black/20 text-xs uppercase tracking-wide">
+              🏷️ {ending.badge}
+            </div>
+          )}
+        </div>
+
+        {/* Narrative Story */}
+        <div className="bg-slate-800/50 rounded-xl p-4 mb-5 border border-slate-700/50">
+          <p className="text-sm text-slate-300 leading-relaxed italic">
+            "{ending.narrative}"
+          </p>
+        </div>
+
+        {/* Turn Counter */}
+        <div className="text-center text-xs text-slate-500 mb-4">
+          Turn {state.turn} of {state.maxTurns}
+          {ending.category !== "style" && (
+            <span className="ml-2 text-slate-600">• {ending.category.toUpperCase()} ending</span>
+          )}
         </div>
 
         {/* Share Card */}
-        <ShareCard state={state} />
+        <ShareCard state={state} ending={ending} />
 
         {/* Action Buttons */}
         <div className="grid grid-cols-1 gap-2 mt-5">
