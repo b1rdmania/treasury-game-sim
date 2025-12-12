@@ -259,7 +259,7 @@ const BASE_EVENTS: EventDef[] = [
       const log = `🐛 Bug bounty payout: researcher found an edge case. Fixed before exploit.`;
       return {
         ...s,
-        officialTreasury: s.officialTreasury - 50_000, // Bounty payment
+        officialTreasury: Math.max(0, s.officialTreasury - Math.floor(s.officialTreasury * 0.005)), // Bounty payment
         techHype: Math.max(0, s.techHype - 10),
         cred: Math.max(0, s.cred - 5),
         log: [log, ...s.log],

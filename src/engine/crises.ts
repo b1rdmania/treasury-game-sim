@@ -239,7 +239,7 @@ export const CRISES: CrisisDef[] = [
           narrative: "Whitehats engage. Costs treasury but buys time.",
           apply: (st) => ({
             ...st,
-            officialTreasury: Math.max(0, st.officialTreasury - 80),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.01)),
             cred: Math.min(100, st.cred + 5),
             heat: Math.min(100, st.heat + 5),
           }),
@@ -399,7 +399,7 @@ export const CRISES: CrisisDef[] = [
               apply: (st) => ({
                 ...st,
                 cred: Math.max(0, st.cred - 5),
-                officialTreasury: Math.max(0, st.officialTreasury - 50),
+                officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.01)),
               }),
             };
           }
@@ -422,7 +422,7 @@ export const CRISES: CrisisDef[] = [
             ...st,
             heat: Math.min(100, st.heat + 20),
             rage: Math.min(100, st.rage + 10),
-            officialTreasury: Math.max(0, st.officialTreasury - 100),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.02)),
           }),
         }),
       },
@@ -443,7 +443,7 @@ export const CRISES: CrisisDef[] = [
           narrative: "VC accepts new terms. Treasury takes a hit. Crisis deferred.",
           apply: (st) => ({
             ...st,
-            officialTreasury: Math.max(0, st.officialTreasury - 200),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.03)),
             rage: Math.max(0, st.rage - 10),
           }),
         }),
@@ -531,7 +531,7 @@ export const CRISES: CrisisDef[] = [
           apply: (st) => ({
             ...st,
             heat: Math.min(100, st.heat + 15),
-            officialTreasury: Math.max(0, st.officialTreasury - 80),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.015)),
           }),
         }),
       },
@@ -711,7 +711,7 @@ export const CRISES: CrisisDef[] = [
           narrative: "Money talks. Devs delete the thread. For now.",
           apply: (st) => ({
             ...st,
-            officialTreasury: Math.max(0, st.officialTreasury - 150),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.025)),
             cred: Math.max(0, st.cred - 5),
             hidden: { ...st.hidden, founderStability: st.hidden.founderStability + 0.1 },
           }),
@@ -922,7 +922,7 @@ export const CRISES: CrisisDef[] = [
           narrative: "Mercenary liquidity stays. True believers leave for fork.",
           apply: (st) => ({
             ...st,
-            officialTreasury: Math.max(0, st.officialTreasury - 100),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.02)),
             tvl: st.tvl * 0.9,
             rage: Math.max(0, st.rage - 10),
           }),
@@ -992,7 +992,7 @@ export const CRISES: CrisisDef[] = [
           narrative: "Professionals handle it. Narrative slowly shifts. Expensive though.",
           apply: (st) => ({
             ...st,
-            officialTreasury: Math.max(0, st.officialTreasury - 120),
+            officialTreasury: Math.max(0, st.officialTreasury - Math.floor(st.officialTreasury * 0.02)),
             heat: Math.max(0, st.heat - 15),
             cred: Math.max(0, st.cred - 5),
           }),

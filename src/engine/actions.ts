@@ -129,7 +129,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Triple your salary 'to retain leadership talent'.",
     tags: ["+Siphon", "+Rage", "-Cred", "-Treasury"],
     apply: (s) => {
-      const amount = 80;
+      const amount = Math.floor(s.officialTreasury * 0.05);
       const log = `You bumped your salary. Some people notice.`;
       return {
         ...s,
@@ -275,7 +275,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Drown LPs in incentives; hope volume follows.",
     tags: ["-Treasury", "+Tech", "+/-Rage", "-Cred"],
     apply: (s) => {
-      const cost = 120;
+      const cost = Math.floor(s.officialTreasury * 0.02);
       const log = `You juiced LP incentives. Farmers rejoice; everyone else shrugs.`;
       return {
         ...s,
@@ -314,7 +314,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Pay influencers to 'vote responsibly'.",
     tags: ["-Treasury", "-Rage", "+Cred", "+Heat"],
     apply: (s) => {
-      const cost = 70;
+      const cost = Math.floor(s.officialTreasury * 0.015);
       const log = `You launched a delegate program. Delegates are... enthusiastic.`;
       return {
         ...s,
@@ -371,7 +371,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Actually ship something. Calms people down.",
     tags: ["-Rage", "+Cred", "+Tech", "-Treasury"],
     apply: (s) => {
-      const cost = 50;
+      const cost = Math.floor(s.officialTreasury * 0.02);
       const log = `You shipped a scaling upgrade. Twitter is impressed.`;
       return {
         ...s,
@@ -445,7 +445,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Blow cash on an over-the-top conference activation.",
     tags: ["-Treasury", "-Rage", "+Cred", "+Tech", "+Heat"],
     apply: (s) => {
-      const cost = 100;
+      const cost = Math.floor(s.officialTreasury * 0.025);
       const log = `Your Token2049 party trends on X. Regulators also notice.`;
       return {
         ...s,
@@ -469,7 +469,7 @@ export const ACTIONS: ActionDef[] = [
     tags: ["-Treasury", "-Heat", "+Rage", "+Cred"],
     defensive: true, // Reduces random event chance
     apply: (s) => {
-      const cost = 120;
+      const cost = Math.floor(s.officialTreasury * 0.02);
       const log = `You lawyerd up. The bill is... inspiring.`;
       return {
         ...s,
@@ -507,7 +507,7 @@ export const ACTIONS: ActionDef[] = [
     tags: ["-Treasury", "-Heat", "+Cred", "-Rage"],
     defensive: true, // Reduces random event chance
     apply: (s) => {
-      const cost = 90;
+      const cost = Math.floor(s.officialTreasury * 0.015);
       const log = `You launched an audit initiative.`;
       return {
         ...s,
@@ -749,7 +749,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Create a MEV bot that subtly drains users. Plausible deniability.",
     tags: ["+Siphon gradual", "+Heat if discovered"],
     apply: (s) => {
-      const amount = 30 + Math.floor(Math.random() * 40);
+      const amount = Math.floor(s.officialTreasury * (0.03 + Math.random() * 0.03));
       const discovered = Math.random() < 0.3;
       const log = discovered
         ? `Your MEV bot got exposed. Anon sleuth is threading.`
@@ -790,7 +790,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Classic governance manipulation. EU is sleeping.",
     tags: ["+Treasury", "++Rage next morning", "-Cred"],
     apply: (s) => {
-      const amount = 150;
+      const amount = Math.floor(s.officialTreasury * 0.02);
       const log = `3AM snapshot passed. Community waking up furious.`;
       return {
         ...s,
@@ -942,7 +942,7 @@ export const ACTIONS: ActionDef[] = [
     description: "Yes, this is a real thing people do.",
     tags: ["-Rage", "-Heat", "-Treasury"],
     apply: (s) => {
-      const cost = 80;
+      const cost = Math.floor(s.officialTreasury * 0.015);
       const log = `CT lobbyist deployed. Narrative starting to shift.`;
       return {
         ...s,
