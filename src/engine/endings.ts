@@ -116,8 +116,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "Replaced by Frog Avatar",
         subline: "Community elected a meme influencer.",
         narrative: "They chose @CryptoFrogXXL over you. His qualifications: 400k followers and a 'gm' streak. 'It's time for new leadership,' you announce.",
-        trigger: (s) => failedBy(s, "rage") && s.cred < 30,
-        weight: 12,
+        trigger: (s) => failedBy(s, "rage") && s.cred < 25 && s.techHype < 50, // More specific: low cred AND low tech
+        weight: 8,
         badge: "Frog Victim",
     },
     {
@@ -408,13 +408,24 @@ export const ENDINGS: EndingDef[] = [
     },
 ];
 
-// Evaluate which ending applies (pick highest weight among matching)
+// Evaluate which ending applies using weighted random selection
 export function evaluateEnding(state: GameState): EndingDef | null {
     const matching = ENDINGS.filter(e => e.trigger(state));
     if (matching.length === 0) return null;
 
-    // Sort by weight descending, pick the highest
-    matching.sort((a, b) => b.weight - a.weight);
+    // If only one matches, return it
+    if (matching.length === 1) return matching[0];
+
+    // Weighted random selection - higher weights are more likely but not guaranteed
+    const totalWeight = matching.reduce((sum, e) => sum + e.weight, 0);
+    let roll = Math.random() * totalWeight;
+
+    for (const ending of matching) {
+        roll -= ending.weight;
+        if (roll <= 0) return ending;
+    }
+
+    // Fallback to first matching (shouldn't happen)
     return matching[0];
 }
 
