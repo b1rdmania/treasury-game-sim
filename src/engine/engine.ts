@@ -148,11 +148,13 @@ export function initialState(params?: {
     techHype: 40,
     seasonId,
     availableActions: [],
+    usedActionIds: [],
+    crisisCount: 0,
     hidden: {
       auditRisk: 0,
       founderStability: 1,
       communityMemory: 0,
-      stablecoinRatio: 0.3, // 30% in stables, 70% in native token
+      stablecoinRatio: 0.3,
     },
     log: ["Welcome to The Treasury Game."],
     recentEvents: [],
@@ -177,6 +179,12 @@ export function step(state: GameState, actionId: ActionId, rng: RNG): GameState 
     const before = { ...next };
     next = action.apply(next);
 
+    // Track this action ID for combo detection
+    next = {
+      ...next,
+      usedActionIds: [...next.usedActionIds, actionId],
+    };
+
     // apply severity scaling to key meters
     const scale = severity.multiplier;
     const applyScale = (val: number, base: number) => base + (val - base) * scale;
@@ -200,6 +208,7 @@ export function step(state: GameState, actionId: ActionId, rng: RNG): GameState 
       next = {
         ...next,
         pendingCrisis: crisis,
+        crisisCount: next.crisisCount + 1, // Track crisis count
         log: [`Crisis triggered: ${crisis.name}`, ...next.log],
       };
     }

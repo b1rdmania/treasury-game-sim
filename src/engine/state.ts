@@ -16,6 +16,8 @@ export interface GameState {
   founderName: string;
   ticker: string;
   availableActions: string[];
+  usedActionIds: string[]; // Track all actions used this run for combo detection
+  crisisCount: number; // Track number of crises survived
   tokenPrice: number; // e.g. 1.0
   tvl: number; // total value locked (USD)
   officialTreasury: number; // protocol treasury (USD)

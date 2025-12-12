@@ -157,6 +157,10 @@ const App: React.FC = () => {
 
   const handleRestart = () => {
     playSound("click");
+    // Close any open modals and clear their data
+    setTurnModalOpen(false);
+    setTurnModalData(null);
+    // Create fresh game with new seed
     const newSeed = Math.floor(Math.random() * 1e9);
     setSeed(newSeed);
     const newRng = mulberry32(newSeed);

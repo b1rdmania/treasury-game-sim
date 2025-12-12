@@ -15,7 +15,11 @@ export type EventId =
   | "bridge_hack"
   | "smart_contract_bug"
   | "whale_dump"
-  | "scandal_fragment";
+  | "scandal_fragment"
+  | "audit_notice"
+  | "team_discord_leak"
+  | "community_never_forgets"
+  | "diversification_pays_off";
 
 export interface EventDef {
   id: EventId;
@@ -284,6 +288,96 @@ const BASE_EVENTS: EventDef[] = [
         cred: Math.max(0, s.cred - 10),
         log: [log, ...s.log],
         recentEvents: ["whale_dump", ...s.recentEvents].slice(0, 5),
+      };
+    },
+  },
+  // === HIDDEN STATE TRIGGER EVENTS ===
+  {
+    id: "audit_notice",
+    name: "Audit Firm Sends Notice",
+    weight: (s, season) => {
+      void season;
+      return s.hidden.auditRisk > 0.4 ? 1.5 : 0; // Only triggers if audit risk is high
+    },
+    apply: (s) => {
+      const isSevere = s.hidden.auditRisk > 0.7;
+      const log = isSevere
+        ? `📋 Big 4 firm requests 'urgent clarification' on treasury movements. This is bad.`
+        : `📋 Auditors asking questions about 'expense categorization.' Stay calm.`;
+      return {
+        ...s,
+        heat: Math.min(100, s.heat + (isSevere ? 25 : 12)),
+        cred: Math.max(0, s.cred - (isSevere ? 10 : 5)),
+        hidden: {
+          ...s.hidden,
+          auditRisk: s.hidden.auditRisk + 0.1, // Gets worse if you ignore it
+        },
+        log: [log, ...s.log],
+        recentEvents: ["audit_notice", ...s.recentEvents].slice(0, 5),
+      };
+    },
+  },
+  {
+    id: "team_discord_leak",
+    name: "Team Discord Leak",
+    weight: (s, season) => {
+      void season;
+      return s.hidden.founderStability < 0.5 ? 1.2 : 0; // Only when team is unstable
+    },
+    apply: (s) => {
+      const log = `💬 Someone leaked internal Discord. Screenshots of you saying "community is ngmi" went viral.`;
+      return {
+        ...s,
+        rage: Math.min(100, s.rage + 20),
+        cred: Math.max(0, s.cred - 15),
+        hidden: {
+          ...s.hidden,
+          founderStability: s.hidden.founderStability - 0.15,
+          communityMemory: s.hidden.communityMemory + 0.2,
+        },
+        log: [log, ...s.log],
+        recentEvents: ["team_discord_leak", ...s.recentEvents].slice(0, 5),
+      };
+    },
+  },
+  {
+    id: "community_never_forgets",
+    name: "Community Never Forgets",
+    weight: (s, season) => {
+      void season;
+      return s.hidden.communityMemory > 0.3 ? 1.0 : 0; // Triggers when community has long memory
+    },
+    apply: (s) => {
+      const log = `🧵 Anon posts compilation of all your broken promises. 'The Complete Rug Timeline.' Gaining traction.`;
+      return {
+        ...s,
+        rage: Math.min(100, s.rage + 15),
+        cred: Math.max(0, s.cred - 8),
+        hidden: {
+          ...s.hidden,
+          communityMemory: s.hidden.communityMemory + 0.1,
+        },
+        log: [log, ...s.log],
+        recentEvents: ["community_never_forgets", ...s.recentEvents].slice(0, 5),
+      };
+    },
+  },
+  {
+    id: "diversification_pays_off",
+    name: "Diversification Pays Off",
+    weight: (s, season) => {
+      void season;
+      return s.hidden.stablecoinRatio > 0.5 ? 0.8 : 0; // Reward for good treasury management
+    },
+    apply: (s) => {
+      const log = `📊 Market dips 30%, but your treasury is mostly stables. CT impressed. 'Actually based treasury management.'`;
+      return {
+        ...s,
+        cred: Math.min(100, s.cred + 10),
+        rage: Math.max(0, s.rage - 8),
+        heat: Math.max(0, s.heat - 5),
+        log: [log, ...s.log],
+        recentEvents: ["diversification_pays_off", ...s.recentEvents].slice(0, 5),
       };
     },
   },
