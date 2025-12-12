@@ -105,8 +105,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "CT Cancelled You",
         subline: "A 40-part thread exposed everything.",
         narrative: "Your brunch photos. Your misaligned treasuries. Your old Medium posts about 'hustle culture.' You deactivate and move to Telegram.",
-        trigger: (s) => failedBy(s, "cred"),
-        weight: 20,
+        trigger: (s) => failedBy(s, "cred") && s.rage < 70 && s.heat < 70, // Only when cred is the main issue
+        weight: 5, // Low weight - fallback cred ending
         badge: "Main Character (Negative)",
     },
     {
@@ -127,8 +127,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "Ratio'd Into Oblivion",
         subline: "One tweet ended it all.",
         narrative: "Your final post got 3 likes and 2,400 quote tweets. Each one was worse than the last. You announce you're 'focusing on building.'",
-        trigger: (s) => failedBy(s, "cred") && s.rage > 60,
-        weight: 10,
+        trigger: (s) => failedBy(s, "cred") && s.rage > 50,
+        weight: 12, // More specific than generic ct_cancels
         badge: "Terminal Ratio",
     },
     {
@@ -138,8 +138,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "AI Deepfake Scandal",
         subline: "An AI clip of you 'confessing' went viral.",
         narrative: "It was obviously fake. The voice was wrong. The lips didn't sync. Nobody cared. 'Guilty until proven innocent' hits different in crypto.",
-        trigger: (s) => failedBy(s, "cred") && s.heat > 50,
-        weight: 8,
+        trigger: (s) => failedBy(s, "cred") && s.heat > 40,
+        weight: 10,
         badge: "Deepfaked",
     },
     {
@@ -165,8 +165,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "Full Internal Mutiny",
         subline: "Your team forked the chain without you.",
         narrative: "They took the code, the community, and the Twitter account. You're now 'Founder Emeritus (Ceremonial)' of nothing.",
-        trigger: (s) => failedBy(s, "rage") && s.cred < 25,
-        weight: 15,
+        trigger: (s) => failedBy(s, "rage") && s.cred < 35,
+        weight: 12,
         badge: "Forked Out",
     },
     {
@@ -224,8 +224,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "Regulator Sent a Love Letter",
         subline: "A strongly-worded inquiry ended everything.",
         narrative: "It was polite. Professional. Devastating. Personal fine avoided thanks to 'unknown Cayman routing.' The chain is done though.",
-        trigger: (s) => failedBy(s, "heat"),
-        weight: 20,
+        trigger: (s) => failedBy(s, "heat") && s.rage < 70 && s.cred > 20, // Only when heat is the main issue
+        weight: 5, // Low weight - fallback heat ending
         badge: "Wells Notice Recipient",
     },
     {
@@ -247,8 +247,8 @@ export const ENDINGS: EndingDef[] = [
         headline: "Exchange Delisting Event",
         subline: "Major exchanges nuked your token overnight.",
         narrative: "Binance. Coinbase. Kraken. All gone by morning. 'Liquidity no longer meets operational needs,' they said. Your Telegram is chaos.",
-        trigger: (s) => s.heat > 70 && s.tokenPrice < 0.5,
-        weight: 12,
+        trigger: (s) => s.heat > 60 && s.tokenPrice < 0.6,
+        weight: 15, // More common - exchanges delist often
         badge: "Delisted",
     },
     {
